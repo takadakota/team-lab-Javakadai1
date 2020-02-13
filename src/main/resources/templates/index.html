@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>top page</title>
+<meta http-equiv="Content-Type" content="text/html"; charset=UTF-8 />
+<style>
+h1 {font-size:18pt; font-weight:bold; color:gray; }
+body { font-size:13pt; color:gray; margin:5px 25px; }
+tr { margin:5px; }
+th { padding:5px; color:white; background:darkgray; }
+td { padding:5px; color:black; background:#f0f0f0; }
+.err { color:red; }
+</style>
+</head>
+<body>
+	<h1 th:text="${title}">Top page</h1>
+	<table>
+	<tr><th>ID</th><th>商品タイトル</th><th>説明文</th><th>商品画像</th><th>価格</th></tr>
+	<tr th:each="obj : ${datalist}">
+		<td th:text="${obj.id}"></td>
+		<td th:text="${obj.title}"></td>
+		<td th:text="${obj.description}"></td>
+		<td th:text="${obj.image}"></td>
+		<td th:text="${obj.price}"></td>
+	</table>
+</body>
+</html>

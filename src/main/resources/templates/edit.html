@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Edit page</title>
+<meta http-equiv="Content-Type" content="text/html"; charset=UTF-8 />
+<style>
+h1 {font-size:18pt; font-weight:bold; color:gray; }
+body { font-size:13pt; color:gray; margin:5px 25px; }
+tr { margin:5px; }
+th { padding:5px; color:white; background:darkgray; }
+td { padding:5px; color:black; background:#f0f0f0; }
+.err { color:red; }
+</style>
+</head>
+
+<body>
+	<h1 th:text="${title}">Edit page</h1>
+	<table>
+	<form method="post" action="/edit" th:object="${formModel}">
+	<input type="hidden" name="id" th:value="*{id}" />
+	<tr><td><label for="image">商品画像</label></td>
+	<td><input type="text" name="image" th:value="*{image}" th:errorclass="err" />
+	<div th:if="${#fields.hasErrors('image')}" th:errors="*{image}" th:errorclass="err"></div></td></tr>
+	<tr><td><label for="title">商品タイトル</label></td>
+	<td><input type="text" name="title" th:value="*{title}" th:errorclass="err" />
+	<div th:if="${#fields.hasErrors('title')}" th:errors="*{title}" th:errorclass="err"></div></td></tr>
+	<tr><td><label for="description">説明文</label></td>
+	<td><input type="text" name="description" th:value="*{description}" th:errorclass="err" />
+	<div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" th:errorclass="err"></div></td></tr>
+	<tr><td><label for="price">価格</label></td>
+    <td><input type="text" name="price" th:value="*{price}" th:errorclass="err" />
+	<div th:if="${#fields.hasErrors('price')}" th:errors="*{price}" th:errorclass="err"></div></td></tr>
+	<tr><td></td><td><input type="submit" value = "更新"/></td></tr>
+	</form>
+	</table>
+	<table>
+	<tr><th>ID</th><th>商品タイトル</th><th>説明文</th><th>商品画像</th><th>価格</th></tr>
+	<tr th:each="obj : ${datalist}">
+		<td th:text="${obj.id}"></td>
+		<td th:text="${obj.title}"></td>
+		<td th:text="${obj.description}"></td>
+		<td th:text="${obj.image}"></td>
+		<td th:text="${obj.price}"></td>
+	</table>
+</body>
