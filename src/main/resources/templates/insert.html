@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>insert page</title>
+<meta http-equiv="Content-Type" content="text/html"; charset=UTF-8 />
+<style>
+h1 {font-size:18pt; font-weight:bold; color:gray; }
+body { font-size:13pt; color:gray; margin:5px 25px; }
+tr { margin:5px; }
+th { padding:5px; color:white; background:darkgray; }
+td { padding:5px; color:black; background:#f0f0f0; }
+.err { color:red; }
+</style>
+</head>
+
+<body>
+	<h1 th:text="${title}">Insert page</h1>
+	<table>
+	<form method="post" action="/insert">
+	<tr><td><label for="image">商品画像</label></td>
+		<td><input type="text" name="image" /></td></tr>
+	<tr><td><label for="title">商品タイトル</label></td>
+		<td><input type="text" name="title" /></td></tr>
+	<tr><td><label for="description">説明文</label></td>
+		<td><input type="text" name="description" /></td></tr>
+	<tr><td><label for="price">価格</label></td>
+    	<td><input type="text" name="price" /></td></tr>
+	<tr><td></td><td><input type="submit" value = "insert"/></td></tr>
+	</form>
+	</table>
+</body>

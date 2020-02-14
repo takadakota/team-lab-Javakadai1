@@ -18,19 +18,9 @@ td { padding:0px 20px; background:#eee; }
 	<input type="hidden" name="id" th:value="*{id}" />
 	<tr><td><p th:text="|商品タイトル:*{title}|"></p></td>
 	<tr><td><p th:text="|説明文:*{description}|"></p></td></tr>
-	<tr><td><p th:text="*{price}"></p></td></tr>
+	<tr><td><p th:text="|価格:*{price}|"></p></td></tr>
 	<tr><td><p th:text="*{image}"></p></td></tr>
 	<tr><td><input type="submit" value="delete"/></td></tr>
 	</form>
-	</table>
-	<table>
-	<tr><th>ID</th><th>商品タイトル</th><th>説明文</th><th>商品画像</th><th>価格</th></tr>
-	<tr th:each="obj : ${datalist}">
-		<td th:text="${obj.id}"></td>
-		<td th:text="${obj.title}"></td>
-		<td th:text="${obj.description}"></td>
-		<td th:text="${obj.image}"></td>
-		<td th:text="${obj.price}"></td>
-	</table>
 </body>
 </html>

@@ -68,13 +68,18 @@ public class Kadai1Controller {
 		}
 		return res;
 	}
-	
+	@GetMapping("/search")
+    public ModelAndView search(ModelAndView mav,MyData mydata, String keyword) {
+		mav.addObject("formModel",mydata);
+		Iterable<MyData> list = repository.findAll();
+		mav.addObject("datalist",list);
+		return mav;
+    }
+
 	@GetMapping("/insert")
 	public ModelAndView insert(@ModelAttribute MyData mydata,ModelAndView mav) {
 		mav.setViewName("insert");
 		mav.addObject("title","データ作成");
-		Iterable<MyData> list = repository.findAll();
-		mav.addObject("datalist",list);
 		return mav;
 	}
 	@PostMapping("/insert")
@@ -90,8 +95,6 @@ public class Kadai1Controller {
 		mav.addObject("title","データ更新");
 		Optional<MyData> data = repository.findById((long)id);
 		mav.addObject("formModel",data.get());
-		Iterable<MyData> list = repository.findAll();
-		mav.addObject("datalist",list);
 		return mav;
 	}
 	@PostMapping("/edit")
@@ -104,11 +107,9 @@ public class Kadai1Controller {
 	@GetMapping("/delete/{id}")
 	public ModelAndView delete(@PathVariable long id, ModelAndView mav) {
 		mav.setViewName("delete");
-		mav.addObject("title","データ削除");
+		mav.addObject("title","データ削除、確認");
 		Optional<MyData> data = repository.findById((long)id);
 		mav.addObject("formModel",data.get());
-		Iterable<MyData> list = repository.findAll();
-		mav.addObject("datalist",list);
 		return mav;
 	}
 	@PostMapping("/delete")
