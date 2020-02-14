@@ -7,4 +7,5 @@ import com.example.TLBkadai.MyData;
 
 @Repository
 public interface MyDataRepository extends JpaRepository<MyData, Long>{
+	
 }

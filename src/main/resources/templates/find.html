@@ -13,23 +13,27 @@ td { padding:5px; color:black; background:#f0f0f0; }
 </style>
 </head>
 <body>
-	<h1 th:text="${title}">Top page</h1>
+	<h1 th:text="${title}">find page</h1>
+	<p th:text="${msg}"></p>
 	<table>
-	<tr><th>ID</th><th>商品タイトル</th><th>説明文</th><th>商品画像</th><th>価格</th><th></th><th></th></tr>
+		<form action="/find" method="post">
+			<tr><td>検索:</td>
+			<td><input type="text" name="fstr" size="20" th:value="${value}"/></td></tr>
+		</form>
+	</table>
+	<hr/>
+	<table>
+	<tr><th>ID</th><th>商品タイトル</th><th>説明文</th><th>商品画像</th><th>価格</th></tr>
 	<tr th:each="obj : ${datalist}" th:object="${obj}">
 		<td th:text="*{id}"></td>
 		<td th:text="*{title}"></td>
 		<td th:text="*{description}"></td>
 		<td th:text="*{image}"></td>
 		<td th:text="*{price}"></td>
-		<td><a class="btn btn-default btn-xs" th:href="@{/edit/{id}(id=*{id})}">編集</a></td>
-		<td><a class="btn btn-default btn-xs" th:href="@{/delete/{id}(id=*{id})}">削除</a></td>
+	</tr>
 	</table>
-	<form method=get action="/insert">
-		<input type = "submit" value = "追加">
-	</form>
-	<form method=get action="/find">
-		<input type = "submit" value = "検索">
+	<form method=get action="/">
+		<input type = "submit" value = "戻る">
 	</form>
 </body>
 </html>

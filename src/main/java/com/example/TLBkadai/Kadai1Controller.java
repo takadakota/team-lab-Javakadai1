@@ -3,27 +3,44 @@ package com.example.TLBkadai;
 import java.util.Optional;
 
 import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.servlet.http.HttpServletRequest;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import com.example.TLBkadai.repository.MyDataRepository;
-import com.example.TLBkadai.MyData;
 
-@RestController
+import com.example.TLBkadai.repository.MyDataRepository;
+
+import com.example.TLBkadai.MyData;
+import org.springframework.web.bind.annotation.PathVariable;
+
+@Controller
 public class Kadai1Controller {
 	
 	@Autowired
 	MyDataRepository repository;
+	@Autowired
+	MyDataService service;
+	
+	@PersistenceContext
+	EntityManager entityManager;
+	
+	MyDataDaoImpl dao;
 	
 	@PostConstruct
 	public void init() {
+		dao = new MyDataDaoImpl(entityManager);
 		MyData d1 = new MyData();
 		d1.setTitle("ラーメン");
 		d1.setDescription("テスト説明文");
@@ -44,16 +61,16 @@ public class Kadai1Controller {
 		repository.saveAndFlush(d3);
 	}
 	
-	@GetMapping("/")
+	@RequestMapping(value="/",method = RequestMethod.GET)
 	public ModelAndView index(@ModelAttribute("formModel") MyData mydata,ModelAndView mav) {
 		mav.setViewName("index");
 		mav.addObject("title","データをCRUD課題、GETホーム画面");
 		mav.addObject("formModel",mydata);
-		Iterable<MyData> list = repository.findAll();
+		List<MyData> list = service.getAll();
 		mav.addObject("datalist",list);
 		return mav;
     }
-	@PostMapping("/")
+	@RequestMapping(value="/",method = RequestMethod.POST)
 	@Transactional(readOnly=false)
 	public ModelAndView form(@ModelAttribute("formModel") @Validated MyData mydata,BindingResult result, ModelAndView mov) {
 		ModelAndView res = null;
@@ -68,28 +85,21 @@ public class Kadai1Controller {
 		}
 		return res;
 	}
-	@GetMapping("/search")
-    public ModelAndView search(ModelAndView mav,MyData mydata, String keyword) {
-		mav.addObject("formModel",mydata);
-		Iterable<MyData> list = repository.findAll();
-		mav.addObject("datalist",list);
-		return mav;
-    }
 
-	@GetMapping("/insert")
+	@RequestMapping(value="/insert",method = RequestMethod.GET)
 	public ModelAndView insert(@ModelAttribute MyData mydata,ModelAndView mav) {
 		mav.setViewName("insert");
 		mav.addObject("title","データ作成");
 		return mav;
 	}
-	@PostMapping("/insert")
+	@RequestMapping(value="/insert",method = RequestMethod.POST)
 	@Transactional(readOnly=false)
 	public ModelAndView create(@ModelAttribute MyData mydata,ModelAndView mav) {
 		repository.saveAndFlush(mydata);
 		return new ModelAndView("redirect:/");
 	}
 	
-	@GetMapping("/edit/{id}")
+	@RequestMapping(value="/edit/{id}",method = RequestMethod.GET)
 	public ModelAndView edit(@ModelAttribute MyData mydata,@PathVariable long id,ModelAndView mav) {
 		mav.setViewName("edit");
 		mav.addObject("title","データ更新");
@@ -97,14 +107,14 @@ public class Kadai1Controller {
 		mav.addObject("formModel",data.get());
 		return mav;
 	}
-	@PostMapping("/edit")
+	@RequestMapping(value="/edit",method = RequestMethod.POST)
 	@Transactional(readOnly=false)
 	public ModelAndView update(@ModelAttribute MyData mydata,ModelAndView mav) {
 		repository.saveAndFlush(mydata);
 		return new ModelAndView("redirect:/");
 	}
 	
-	@GetMapping("/delete/{id}")
+	@RequestMapping(value="/delete/{id}",method = RequestMethod.GET)
 	public ModelAndView delete(@PathVariable long id, ModelAndView mav) {
 		mav.setViewName("delete");
 		mav.addObject("title","データ削除、確認");
@@ -112,11 +122,37 @@ public class Kadai1Controller {
 		mav.addObject("formModel",data.get());
 		return mav;
 	}
-	@PostMapping("/delete")
+	@RequestMapping(value="/delete",method = RequestMethod.POST)
 	@Transactional(readOnly=false)
 	public ModelAndView remove(@RequestParam long id,ModelAndView mav) {
 		repository.deleteById(id);
 		return new ModelAndView("redirect:/");
 	}
 	
+	@RequestMapping(value="/find",method = RequestMethod.GET)
+	public ModelAndView find(ModelAndView mav) {
+		mav.setViewName("find");
+		mav.addObject("title","検索");
+		mav.addObject("msg","MyDataのサンプル");
+		mav.addObject("value","");
+		Iterable<MyData> list = dao.getAll();
+		mav.addObject("datalist",list);
+		return mav;
+    }
+	
+	@RequestMapping(value="/find",method = RequestMethod.POST)
+	public ModelAndView search(HttpServletRequest request,ModelAndView mav) {
+		mav.setViewName("find");
+		String param = request.getParameter("fstr");
+		if(param == "") {
+			mav = new ModelAndView("redirect:/find");
+		} else {
+			mav.addObject("title","検索結果");
+			mav.addObject("msg","「" + param + "」の検索結果");
+			mav.addObject("value",param);
+			List<MyData> list = dao.find(param);
+			mav.addObject("datalist",list);
+		}
+		return mav;
+    }
 }
