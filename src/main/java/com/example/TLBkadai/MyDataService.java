@@ -10,10 +10,17 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import org.springframework.stereotype.Service;
+
+import com.example.TLBkadai.repository.MyDataRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Service
 public class MyDataService {
+	
+	@Autowired
+	MyDataRepository repository;
 	
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -44,6 +51,19 @@ public class MyDataService {
 	@SuppressWarnings("unchecked")
 	public List<MyData> findByName(String name) {
 		return (List<MyData>)entityManager.createQuery("from MyData where name = " + name).getResultList();
+	}
+	
+	public List<MyData> findAll(){
+		return repository.findAll();
+	}
+	public void delete(long id){
+		repository.deleteById(id);
+	}
+	public void update(MyData mydata){
+		repository.saveAndFlush(mydata);
+	}
+	public void create(List<MyData> mydata){
+		repository.saveAll(mydata);
 	}
 }
 

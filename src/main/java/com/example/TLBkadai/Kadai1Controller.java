@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.example.TLBkadai.repository.MyDataRepository;
@@ -71,24 +70,24 @@ public class Kadai1Controller {
 	public ModelAndView index(@ModelAttribute("formModel") MyData mydata,ModelAndView mav) {
 		mav.setViewName("index");
 		mav.addObject("title","データをCRUD課題、GETホーム画面");
-		mav.addObject("msg","MyDataのサンプルです");
+		mav.addObject("msg","ホーム画面");
 		mav.addObject("formModel",mydata);
-		List<MyData> list = service.getAll();
+		List<MyData> list = repository.findAll();
 		mav.addObject("datalist",list);
 		return mav;
     }
 	@RequestMapping(value="/",method = RequestMethod.POST)
 	@Transactional(readOnly=false)
-	public ModelAndView form(@ModelAttribute("formModel") @Validated MyData mydata,BindingResult result, ModelAndView mov) {
+	public ModelAndView form(@ModelAttribute("formModel") @Validated MyData mydata,BindingResult result, ModelAndView mav) {
 		ModelAndView res = null;
 		if(!result.hasErrors()) {
 		repository.saveAndFlush(mydata);
 		}else{
-			mov.setViewName("index");
-			mov.addObject("title","データをCRUD課題、POSTホーム画面");
+			mav.setViewName("index");
+			mav.addObject("title","データをCRUD課題、POSTホーム画面");
 			Iterable<MyData> list = repository.findAll();
-			mov.addObject("datalist",list);
-			res = mov;
+			mav.addObject("datalist",list);
+			res = mav;
 		}
 		return res;
 	}
@@ -132,7 +131,7 @@ public class Kadai1Controller {
 	@RequestMapping(value="/delete",method = RequestMethod.POST)
 	@Transactional(readOnly=false)
 	public ModelAndView remove(@RequestParam long id,ModelAndView mav) {
-		repository.deleteById(id);
+		service.delete(id);
 		return new ModelAndView("redirect:/");
 	}
 	
@@ -140,7 +139,7 @@ public class Kadai1Controller {
 	public ModelAndView find(ModelAndView mav) {
 		mav.setViewName("find");
 		mav.addObject("title","検索");
-		mav.addObject("msg","MyDataのサンプル");
+		mav.addObject("msg","検索します");
 		mav.addObject("value","");
 		List<MyData> list = service.getAll();
 		mav.addObject("datalist",list);
@@ -176,7 +175,7 @@ public class Kadai1Controller {
 	public ModelAndView index(ModelAndView mav,Pageable pageable) {
 		mav.setViewName("index");
 		mav.addObject("title","Find Page");
-		mav.addObject("msg","MyDataのサンプルです。");
+		mav.addObject("msg","ページネイト動作確認");
 		Page<MyData> list = repository.findAll(pageable);
 		mav.addObject("datalist", list);
 		return mav;
