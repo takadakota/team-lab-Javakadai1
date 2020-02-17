@@ -28,10 +28,12 @@ public class MyDataService {
 	}
 	
 	public List<MyData> find(String fstr){
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<MyData> query = builder.createQuery(MyData.class);
+		Root<MyData> root = query.from(MyData.class);
+		query.select(root).where(builder.equal(root.get("name"),fstr));
 		List<MyData> list = null;
-		String qstr = "from MyData where id = fstr";
-		Query query = entityManager.createQuery(qstr);.setParameter("fstr",Long.parseLong(fstr));
-		list = query.getResultList();
+		list = (List<MyData>) entityManager.createQuery(query).getResultList();
 		return list;
 	}
 	

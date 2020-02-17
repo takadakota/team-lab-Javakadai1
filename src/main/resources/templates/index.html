@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <title>top page</title>
-<meta http-equiv="Content-Type" content="text/html"; charset=UTF-8 />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <style>
 h1 {font-size:18pt; font-weight:bold; color:gray; }
 body { font-size:13pt; color:gray; margin:5px 25px; }
@@ -14,6 +14,8 @@ td { padding:5px; color:black; background:#f0f0f0; }
 </head>
 <body>
 	<h1 th:text="${title}">Top page</h1>
+	<p  th:text="${msg}"></p>
+	<ol id="obj"></ol>
 	<table>
 	<tr><th>ID</th><th>商品タイトル</th><th>説明文</th><th>商品画像</th><th>価格</th><th></th><th></th></tr>
 	<tr th:each="obj : ${datalist}" th:object="${obj}">
@@ -25,6 +27,11 @@ td { padding:5px; color:black; background:#f0f0f0; }
 		<td><a class="btn btn-default btn-xs" th:href="@{/edit/{id}(id=*{id})}">編集</a></td>
 		<td><a class="btn btn-default btn-xs" th:href="@{/delete/{id}(id=*{id})}">削除</a></td>
 	</table>
+	<div>
+	<!--   <a my:mypage="${datalist.getNumber() - 1}">&lt;&lt;prev</a>
+	|
+	<a my:mypage="${datalist.getNumber() - 1}">next&gt;&gt;</a> -->
+	</div>
 	<form method=get action="/insert">
 		<input type = "submit" value = "追加">
 	</form>

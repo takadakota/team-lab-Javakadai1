@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.example.TLBkadai.repository.MyDataRepository;
@@ -25,13 +26,18 @@ import com.example.TLBkadai.repository.MyDataRepository;
 import com.example.TLBkadai.MyData;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 @Controller
 public class Kadai1Controller {
 	
 	@Autowired
 	MyDataRepository repository;
 	@Autowired
-	MyDataService service;
+	private MyDataService service;
+	@Autowired
+	MyDataBean myDataBean;
 	
 	@PersistenceContext
 	EntityManager entityManager;
@@ -65,6 +71,7 @@ public class Kadai1Controller {
 	public ModelAndView index(@ModelAttribute("formModel") MyData mydata,ModelAndView mav) {
 		mav.setViewName("index");
 		mav.addObject("title","データをCRUD課題、GETホーム画面");
+		mav.addObject("msg","MyDataのサンプルです");
 		mav.addObject("formModel",mydata);
 		List<MyData> list = service.getAll();
 		mav.addObject("datalist",list);
@@ -135,7 +142,7 @@ public class Kadai1Controller {
 		mav.addObject("title","検索");
 		mav.addObject("msg","MyDataのサンプル");
 		mav.addObject("value","");
-		Iterable<MyData> list = dao.getAll();
+		List<MyData> list = service.getAll();
 		mav.addObject("datalist",list);
 		return mav;
     }
@@ -154,5 +161,24 @@ public class Kadai1Controller {
 			mav.addObject("datalist",list);
 		}
 		return mav;
-    }
+	}
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	public  ModelAndView indexById(@PathVariable long id, ModelAndView mav) {
+		mav.setViewName("pickup");
+		mav.addObject("title","Pickup Page");
+		String table = "<table>" + myDataBean.getTableTagById(id) + "</table>";
+		mav.addObject("msg","pickup data id = " + id);
+		mav.addObject("data",table);
+		return mav;
+	}
+	
+	@RequestMapping(value = "/page", method = RequestMethod.GET)
+	public ModelAndView index(ModelAndView mav,Pageable pageable) {
+		mav.setViewName("index");
+		mav.addObject("title","Find Page");
+		mav.addObject("msg","MyDataのサンプルです。");
+		Page<MyData> list = repository.findAll(pageable);
+		mav.addObject("datalist", list);
+		return mav;
+	}
 }
