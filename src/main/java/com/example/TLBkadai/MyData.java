@@ -8,12 +8,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.persistence.NamedQuery;
-import javax.persistence.NamedQueries;
 
 @Entity
 @Table(name = "mydata")
-//ほんとは@NamedQueries使いたいけど@NamedQuery複数同時チェックが調べてもわからん
 public class MyData {
 	@Id
 	@Column
@@ -47,6 +44,5 @@ public class MyData {
 
 	public String getImage() {return image;}
 	public void setImage(String image) {this.image = image;}
-	
-	
+
 }
